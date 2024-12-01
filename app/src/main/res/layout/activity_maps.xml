@@ -1,44 +1,85 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/transparent"> <!-- Fondo transparente -->
 
-    <!-- Mapa -->
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <!-- CardView Exterior: Sin esquinas redondeadas -->
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view_outer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <!-- Mostrar Latitud y Longitud -->
-    <TextView
-        android:id="@+id/textViewLatitud"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Latitud: -"
-        android:textSize="16sp"
-        android:layout_margin="8dp"
-        android:padding="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewLongitud"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Longitud: -"
-        android:textSize="16sp"
-        android:layout_margin="8dp"
-        android:padding="8dp"/>
-
-    <!-- Botón flotante de guardar -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabGuardarDomicilio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_weight="1"
         android:layout_margin="16dp"
-        android:contentDescription="guardar_domicilio"
-        android:src="@drawable/add" />
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="4dp"
+        card_view:cardBackgroundColor="@android:color/transparent">
 
+        <!-- CardView Interior: Con esquinas redondeadas -->
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_inner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            card_view:cardBackgroundColor="@android:color/white"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="0dp">
+
+            <!-- Fragmento de Mapa -->
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Layout horizontal para latitud, longitud y el botón -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        > <!-- Alineación vertical centrada -->
+
+        <!-- LinearLayout para las etiquetas de latitud y longitud -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <!-- Mostrar Latitud -->
+            <TextView
+                android:id="@+id/textViewLatitud"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latitud: -"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Mostrar Longitud -->
+            <TextView
+                android:id="@+id/textViewLongitud"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Longitud: -"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+        </LinearLayout>
+
+        <!-- Botón flotante para agregar nuevo domicilio -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabGuardarDomicilio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:src="@drawable/add"
+            android:contentDescription="guardar_domicilio" />
+    </LinearLayout>
 </LinearLayout>
