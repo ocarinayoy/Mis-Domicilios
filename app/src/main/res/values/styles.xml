@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- Añade esta línea para mejorar la animación del Drawer -->
+    <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+</style>
+
+    <style name="DrawerArrowStyle">
+        <item name="color">@android:color/white</item> <!-- Cambia el color según tus necesidades -->
+    </style>
+</resources>
