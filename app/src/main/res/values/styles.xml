@@ -4,6 +4,9 @@
     <!-- Añade esta línea para mejorar la animación del Drawer -->
     <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 </style>
+    <style name="TransparentBackgroundStyle">
+        <item name="android:background">@color/transparent</item>
+    </style>
 
     <style name="DrawerArrowStyle">
         <item name="color">@android:color/white</item> <!-- Cambia el color según tus necesidades -->
