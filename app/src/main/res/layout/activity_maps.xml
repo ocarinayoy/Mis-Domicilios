@@ -6,17 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
 
-    <!-- Contenido principal -->
-    <LinearLayout
+    <!-- Contenedor principal -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <!-- CardView con el fragmento del mapa -->
+        <!-- CardView con esquinas redondeadas para el mapa -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp">
 
@@ -25,47 +23,53 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </androidx.cardview.widget.CardView>
 
-        <!-- Layout para coordenadas y el botón flotante -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <!-- TextViews para latitud y longitud -->
+            <!-- Componentes superpuestos -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:layout_gravity="bottom"
+                android:background="@color/transparent"> <!-- Fondo blanco semitransparente -->
 
-                <TextView
-                    android:id="@+id/textViewLatitud"
+                <!-- TextViews para latitud y longitud -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewLatitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Latitud: -"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textViewLongitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Longitud: -"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Botón flotante -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabGuardarDomicilio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Latitud: -"
-                    android:textSize="16sp" />
+                    android:contentDescription="Guardar domicilio"
+                    android:src="@drawable/add"
 
-                <TextView
-                    android:id="@+id/textViewLongitud"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Longitud: -"
-                    android:textSize="16sp" />
+                    />
             </LinearLayout>
 
-            <!-- Botón flotante -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabGuardarDomicilio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@drawable/add"
-                android:contentDescription="Guardar domicilio" />
-        </LinearLayout>
-    </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </FrameLayout>
 
     <!-- Menú lateral (Navigation Drawer) -->
     <com.google.android.material.navigation.NavigationView
