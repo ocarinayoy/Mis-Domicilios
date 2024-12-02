@@ -2,7 +2,6 @@ package com.tdm.misdomicilios
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -20,13 +19,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-//        // Eliminar la base de datos si existe
-//        val dbFile = this.getDatabasePath("ue3.db")
-//        if (dbFile.exists()) {
-//            this.deleteDatabase("ue3.db")
-//            Log.d("Database", "Base de datos eliminada.")
-//        }
 
         // Inicializar vistas
         editTextUsername = findViewById(R.id.editTextUsername)

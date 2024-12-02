@@ -38,5 +38,8 @@
         <!-- MapsActivity -->
         <activity android:name=".MapsActivity" android:exported="true" />
 
+        <!-- RegisterActivity -->
+        <activity android:name=".RegisterActivity" />
+
     </application>
 </manifest>

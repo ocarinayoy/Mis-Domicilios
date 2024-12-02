@@ -26,10 +26,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var textViewLongitud: TextView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var dbHelper: DatabaseHelper
+    private var userId: Int = -1 // Variable para almacenar el ID del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        // Obtener el ID del usuario desde el Intent
+        userId = intent.getIntExtra("USER_ID", -1)
+        if (userId == -1) {
+            Toast.makeText(this, "Error: ID de usuario no encontrado", Toast.LENGTH_SHORT).show()
+            finish() // Si no se encuentra el usuario, cerramos la actividad
+            return
+        }
 
         // Configurar DrawerLayout y NavigationView
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -62,6 +71,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             when (menuItem.itemId) {
                 R.id.nav_profile -> {
                     mostrarPerfil() // Mostrar el perfil cuando se selecciona la opción
+                }
+                R.id.nav_logout -> { // Acción de cerrar sesión
+                    cerrarSesion()
                 }
                 // Agrega más casos para otras opciones
                 else -> {}
@@ -112,8 +124,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Método para manejar el cierre de sesión
     private fun cerrarSesion() {
-        // Lógica de cierre de sesión
-        // Ejemplo: Redirigir al login
+        // Limpiar cualquier dato de sesión (si es necesario)
+        val sharedPrefs = getSharedPreferences("MisDomiciliosPrefs", MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.clear() // Elimina los datos de sesión almacenados
+        editor.apply()
+
+        // Redirigir al login
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish() // Cerrar la actividad actual
@@ -130,13 +147,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .setPositiveButton("Guardar") { _, _ ->
                 val nombre = nombreEditText.text.toString()
                 val direccion = direccionEditText.text.toString()
-                val id = dbHelper.insertarDomicilio(
+                // Insertar el domicilio
+                val domicilioId = dbHelper.insertarDomicilio(
                     nombre,
                     direccion,
                     mMap.cameraPosition.target.latitude,
                     mMap.cameraPosition.target.longitude
                 )
-                Toast.makeText(this, "Domicilio guardado con ID: $id", Toast.LENGTH_LONG).show()
+
+                if (domicilioId > 0) {
+                    // Asociar el domicilio con el usuario
+                    dbHelper.asociarDomicilioUsuario(userId, domicilioId.toInt())
+                    Toast.makeText(this, "Domicilio guardado y asociado correctamente", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Error al guardar el domicilio", Toast.LENGTH_LONG).show()
+                }
             }
             .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
         builder.show()

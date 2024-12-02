@@ -1,5 +1,6 @@
 package com.tdm.misdomicilios
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -12,6 +13,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var editTextEmail: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var buttonRegister: Button
+    private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,25 +25,35 @@ class RegisterActivity : AppCompatActivity() {
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonRegister = findViewById(R.id.buttonRegister)
 
-        // Configurar evento de registro
+        // Inicializar la base de datos
+        dbHelper = DatabaseHelper(this)
+
+        // Acción para registrar el usuario
         buttonRegister.setOnClickListener {
             val username = editTextUsername.text.toString()
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
 
             if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                // Lógica para registrar al usuario (puede ser con la base de datos o un servidor)
-                registrarUsuario(username, email, password)
+                if (dbHelper.existeUsername(username)) {
+                    Toast.makeText(this, "El nombre de usuario ya está en uso", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val usuarioId = dbHelper.registrarUsuario(username, email, password)
+                    if (usuarioId > 0) {
+                        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                        // Redirigir al Login
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Error en el registro", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } else {
-                Toast.makeText(this, "Por favor ingresa todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
-
-    private fun registrarUsuario(username: String, email: String, password: String) {
-        // Ejemplo de registro (en un servidor o base de datos)
-        Toast.makeText(this, "Usuario $username registrado con éxito", Toast.LENGTH_SHORT).show()
-        finish()  // Cerrar la actividad de registro y regresar a LoginActivity
-    }
 }
-

@@ -71,6 +71,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return db.insert("usuarios", null, values)
     }
 
+    fun existeUsername(username: String): Boolean {
+        val db = readableDatabase
+        val query = "SELECT * FROM usuarios WHERE username = ?"
+        val cursor = db.rawQuery(query, arrayOf(username))
+        val existe = cursor.count > 0
+        cursor.close()
+        return existe
+    }
+
     fun obtenerUsuarioPorId(id: Int): Cursor {
         val db = readableDatabase
         return db.rawQuery("SELECT * FROM usuarios WHERE id = ?", arrayOf(id.toString()))
