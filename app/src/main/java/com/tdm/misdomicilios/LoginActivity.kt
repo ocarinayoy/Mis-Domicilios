@@ -2,6 +2,7 @@ package com.tdm.misdomicilios
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -14,10 +15,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var editTextPassword: EditText
     private lateinit var buttonLogin: Button
     private lateinit var textViewRegister: TextView
+    private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+//        // Eliminar la base de datos si existe
+//        val dbFile = this.getDatabasePath("ue3.db")
+//        if (dbFile.exists()) {
+//            this.deleteDatabase("ue3.db")
+//            Log.d("Database", "Base de datos eliminada.")
+//        }
 
         // Inicializar vistas
         editTextUsername = findViewById(R.id.editTextUsername)
@@ -25,36 +34,48 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin = findViewById(R.id.buttonLogin)
         textViewRegister = findViewById(R.id.textViewRegister)
 
-        // Configurar el evento del botón de login
+        // Inicializar la base de datos
+        dbHelper = DatabaseHelper(this)
+
+        // Acción del botón de iniciar sesión
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
 
             if (username.isNotEmpty() && password.isNotEmpty()) {
-                // Lógica para autenticar al usuario
-                autenticarUsuario(username, password)
+                if (dbHelper.autenticarUsuario(username, password)) {
+                    Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                    navegarAMapsActivity(username) // Navegar al mapa
+                } else {
+                    Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(this, "Por favor ingresa usuario y contraseña", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Configurar evento para ir a la actividad de registro (si es necesario)
+        // Acción para ir a la actividad de registro
         textViewRegister.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
-    // Método para autenticar al usuario
-    private fun autenticarUsuario(username: String, password: String) {
-        // Lógica de autenticación (esto puede ser con una base de datos local o API)
-        // Para este ejemplo, se usa una autenticación simple (como prueba)
-        if (username == "admin" && password == "admin") {
-            val intent = Intent(this, MapsActivity::class.java)
+    private fun navegarAMapsActivity(username: String) {
+        // Obtener el ID del usuario autenticado
+        val cursor = dbHelper.obtenerUsuarioPorId(dbHelper.obtenerUsuarioPorUsername(username))
+        if (cursor.moveToFirst()) {
+            val userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+            cursor.close()
+
+            val intent = Intent(this, MapsActivity::class.java).apply {
+                putExtra("USER_ID", userId) // Pasar el ID del usuario a la actividad MapsActivity
+            }
             startActivity(intent)
-            finish()  // Cerrar la actividad de login
+            finish()
         } else {
-            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+            cursor.close()
+            Toast.makeText(this, "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show()
         }
     }
 }

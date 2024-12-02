@@ -24,9 +24,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC8iHUGpe_5is8PooET8AEez4UdRr0XQU0" />
 
-        <!-- MapsActivity como actividad principal -->
+        <!-- LoginActivity como actividad principal -->
         <activity
-            android:name=".MapsActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -35,6 +35,8 @@
             </intent-filter>
         </activity>
 
+        <!-- MapsActivity -->
+        <activity android:name=".MapsActivity" android:exported="true" />
+
     </application>
 </manifest>
-
