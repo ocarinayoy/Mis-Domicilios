@@ -1,6 +1,8 @@
 package com.tdm.misdomicilios
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -13,6 +15,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -49,9 +53,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Configurar acción del botón flotante
-        findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabGuardarDomicilio)
+        // Configurar el botón flotante
+        findViewById<FloatingActionButton>(R.id.fabGuardarDomicilio)
             .setOnClickListener { mostrarDialogoDomicilio() }
+
+        // Configurar el listener del NavigationView
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_profile -> {
+                    mostrarPerfil() // Mostrar el perfil cuando se selecciona la opción
+                }
+                // Agrega más casos para otras opciones
+                else -> {}
+            }
+            drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
+            true
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -73,6 +90,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         textViewLongitud.text = "Longitud: ${latLng.longitude}"
     }
 
+    // Mostrar el BottomSheet del Perfil
+    private fun mostrarPerfil() {
+        // Inflar el layout del perfil
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_perfil, null)
+
+        // Crear el BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // Configurar el botón de cerrar sesión
+        val btnCerrarSesion = bottomSheetView.findViewById<Button>(R.id.btnCerrarSesion)
+        btnCerrarSesion.setOnClickListener {
+            cerrarSesion()
+            bottomSheetDialog.dismiss() // Cerrar el BottomSheet después de cerrar sesión
+        }
+
+        // Mostrar el BottomSheet
+        bottomSheetDialog.show()
+    }
+
+    // Método para manejar el cierre de sesión
+    private fun cerrarSesion() {
+        // Lógica de cierre de sesión
+        // Ejemplo: Redirigir al login
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Cerrar la actividad actual
+    }
+
+    // Método para mostrar el cuadro de diálogo de domicilio
     private fun mostrarDialogoDomicilio() {
         val builder = android.app.AlertDialog.Builder(this)
         val dialogLayout = layoutInflater.inflate(R.layout.dialog_domicilio, null)
